@@ -68,7 +68,8 @@ $token = $_SESSION['csrf_token'] ?>
                     <button class="btn btn-success">Add banner</button>
                 </form>
                 <br>
-                <?php var_dump($token = $_SESSION['csrf_token']); ?>
+                <!--                --><?php //var_dump($token = $_SESSION['csrf_token']); ?>
+
                 <table class="table table-striped table-bordered table-sm" id="example">
                     <thead>
                     <tr>
@@ -87,13 +88,26 @@ $token = $_SESSION['csrf_token'] ?>
                     <?php use application\models\Admin;
 
                     $banners = new Admin();
-                    $allBanners = $banners->getBanners(); ?>
+
+                    if (!isset($_GET['page'])) {
+                        $page = 1;  //move to constant DEFAULT PAGE
+                    } else {
+                        $page = $_GET['page'];
+                    }
+
+                    $limit = 3;//move to constant PAGE_LIMIT
+                    //                    var_dump($page * $limit, $page, $limit);
+                    $skip = ($page * $limit) - $limit;
+                    $allBanners = $banners->getBanners($limit, $skip); ?>
+
                     <?php foreach ($allBanners as $item => $value) : ?>
 
                         <tr>
                             <th><?php echo htmlspecialchars($value['id']); ?></th>
                             <td><?php echo htmlspecialchars($value['name']) ?></td>
-                            <td><?php echo '<img src ="'.htmlspecialchars($value['img']).'" width="250" height="250" />'; ?></td>
+                            <td><?php echo '<img src ="' . htmlspecialchars(
+                                        $value['img']
+                                    ) . '" width="250" height="250" />'; ?></td>
                             <td><?php echo htmlspecialchars($value['link']); ?></td>
                             <td><?php echo htmlspecialchars($value['status']); ?></td>
                             <td><?php echo htmlspecialchars($value['pos']); ?></td>
@@ -112,7 +126,7 @@ $token = $_SESSION['csrf_token'] ?>
                                 </form>
 
                                 <form action="<?php echo EDIT_URL ?>" method="post">
-                                    <input type="hidden" name="token" value="<?php echo$token ?>">
+                                    <input type="hidden" name="token" value="<?php echo $token ?>">
                                     <button name="edit" class="btn btn-primary" value="<?php echo $value['id'] ?>">
                                         Edit
                                     </button>
@@ -126,9 +140,22 @@ $token = $_SESSION['csrf_token'] ?>
                 </table>
             </div>
         </div>
+        <?php
+
+        $count_query = $banners->CountBanners();
+        $count = $count_query[0];
+        var_dump($count["COUNT(*)"]);
+        $length = ceil($count['COUNT(*)'] / 3);
+        echo 'len = ' . $length;
+        ?>
         <nav aria-label="Page navigation example">
             <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <?php foreach (range(1, $length) as $p) : ?>
+
+                    <li class="page-item"><a class="page-link"
+                                             href="?page=<?php echo $p ?>"><?php echo $p ?></a>
+                    </li>
+                <?php endforeach; ?>
             </ul>
         </nav>
         <?php include_once(FOOTER) ?>

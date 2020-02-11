@@ -6,17 +6,23 @@ use application\core\Model;
 use http\Params;
 use PDO;
 
+require_once 'const.php';
+
 class Admin extends Model
 {
 
-    public function getBanners()
+    public function getBanners($limit, $offset)
     {
-        return $this->db->row('SELECT * FROM banners order by pos ASC ');
+        return $this->db->row('SELECT * FROM banners LIMIT ' . $limit . ' OFFSET ' . $offset . '');
+    }
+
+    public function CountBanners()
+    {
+        return $this->db->row('SELECT COUNT(*) FROM banners order by id DESC ');
     }
 
     public function bannerAdd($title, $image, $link, $status, $position)
     {
-
         $params = [
             'title' => $title,
             'image' => $image,
@@ -66,7 +72,6 @@ class Admin extends Model
 
     public function uploadImage($image)
     {
-
         if (isset($_FILES['image']) && !empty($_FILES['image'])) {
             $image = strtolower($_FILES['image']['name']);
             $fileTmpName = $_FILES['image']['tmp_name'];
@@ -78,7 +83,7 @@ class Admin extends Model
             $name = $image; //name image
             $tmp_name = $_FILES['image']['tmp_name']; // get tmp name
             move_uploaded_file($tmp_name, ROOT . UPLOAD_IMG . $name);
-            $new_path =  UPLOAD_IMG . $name;//запись пути в базу
+            $new_path = UPLOAD_IMG . $name;//запись пути в базу
             return $new_path;
         }
         return false;
