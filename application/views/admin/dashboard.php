@@ -68,16 +68,21 @@ $token = $_SESSION['csrf_token'] ?>
                     <button class="btn btn-success">Add banner</button>
                 </form>
                 <br>
-                <!--                --><?php //var_dump($token = $_SESSION['csrf_token']); ?>
-
+                <?php
+                if (!isset($_GET['page'])) {
+                    $page = 1;  //move to constant DEFAULT PAGE
+                } else {
+                    $page = $_GET['page'];
+                }
+                ?>
                 <table class="table table-striped table-bordered table-sm" id="example">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Title</th>
+                        <th scope="col"><a href="?page=<?php echo $page ?>&order=name">Title</th>
                         <th scope="col">Image</th>
                         <th scope="col">Link</th>
-                        <th scope="col">Status</th>
+                        <th scope="col"><a href="?page=<?php echo $page ?>&status=status">Status</th>
                         <th scope="col">Position</th>
                         <th scope="col">Created_at</th>
                         <th scope="col">Updated_at</th>
@@ -87,19 +92,23 @@ $token = $_SESSION['csrf_token'] ?>
                     <tbody>
                     <?php use application\models\Admin;
 
+                    if (!isset($_GET['order'])) {
+                        $order = 'id';  //move to constant DEFAULT PAGE
+                    } else {
+                        $order = $_GET['order'];
+                    }
+                    if (!isset($_GET['status'])) {
+                        $status = 'id';  //move to constant DEFAULT PAGE
+                    } else {
+                        $status = $_GET['status'];
+                    }
                     $banners = new Admin();
 
-                    if (!isset($_GET['page'])) {
-                        $page = 1;  //move to constant DEFAULT PAGE
-                    } else {
-                        $page = $_GET['page'];
-                    }
 
                     $limit = 3;//move to constant PAGE_LIMIT
-                    //                    var_dump($page * $limit, $page, $limit);
                     $skip = ($page * $limit) - $limit;
-                    $allBanners = $banners->getBanners($limit, $skip); ?>
 
+                    $allBanners = $banners->getBanners($limit, $skip, $order, $status); ?>
                     <?php foreach ($allBanners as $item => $value) : ?>
 
                         <tr>

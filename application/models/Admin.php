@@ -11,9 +11,11 @@ require_once 'const.php';
 class Admin extends Model
 {
 
-    public function getBanners($limit, $offset)
+    public function getBanners($limit, $offset, $order = 'name', $status = 'status')
     {
-        return $this->db->row('SELECT * FROM banners LIMIT ' . $limit . ' OFFSET ' . $offset . '');
+        return $this->db->row(
+            'SELECT * FROM banners ORDER BY ' . $order . '  LIMIT ' . $limit . ' OFFSET ' . $offset
+        );
     }
 
     public function CountBanners()
@@ -32,7 +34,7 @@ class Admin extends Model
 
         ];
         $this->db->query(
-            'INSERT INTO banners VALUES (NULL ,:title, :image,:link,:status,:pos, current_timestamp ,current_timestamp )',
+            'INSERT INTO banners VALUES(null,:title, :image,:link,:status,:pos, current_timestamp ,current_timestamp )',
             $params
         );
     }
