@@ -22,13 +22,17 @@ class Router
     public function add($route, $params)
     {
         $route = preg_replace('/{([a-z]+):([^\}]+)}/', '(?P<\1>\2)', $route);
-        $route = '#^'.$route.'$#';
+        $route = '#^' . $route . '$#';
         $this->routes[$route] = $params;
     }
 
     public function match()
     {
-        $url = trim($_SERVER['REQUEST_URI'], '/');
+        $url = $_SERVER['REQUEST_URI'];
+        if (strpos($url, '?') !== false) {
+            $url = substr($url, 0, strpos($url, '?'));
+        }
+        $url = trim($url, '/');
         foreach ($this->routes as $route => $params) {
             if (preg_match($route, $url, $matches)) {
                 foreach ($matches as $key => $match) {
@@ -51,9 +55,9 @@ class Router
     public function run()
     {
         if ($this->match()) {
-            $path = 'application\controllers\\'.ucfirst($this->params['controller']).'Controller';
+            $path = 'application\controllers\\' . ucfirst($this->params['controller']) . 'Controller';
             if (class_exists($path)) {
-                $action = $this->params['action'].'Action';
+                $action = $this->params['action'] . 'Action';
                 if (method_exists($path, $action)) {
                     $controller = new $path($this->params);
                     $controller->$action();

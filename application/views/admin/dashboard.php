@@ -23,7 +23,6 @@ $token = $_SESSION['csrf_token'] ?>
         <hr class="sidebar-divider d-none d-md-block">
 
     </ul>
-
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
 
@@ -59,11 +58,6 @@ $token = $_SESSION['csrf_token'] ?>
                         </a>
                 </ul>
             </nav>
-            <script>
-                $(document).ready(function () {
-                    $('#example').DataTable();
-                });
-            </script>
             <div class="container-fluid">
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -132,7 +126,11 @@ $token = $_SESSION['csrf_token'] ?>
                 </table>
             </div>
         </div>
-
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+            </ul>
+        </nav>
         <?php include_once(FOOTER) ?>
 
     </div>

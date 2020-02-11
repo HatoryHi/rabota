@@ -67,6 +67,7 @@ class AdminController extends Controller
 
     public function dashboardAction()
     {
+        var_dump($_GET);
         if (empty($_SESSION['user'])) {
             return $this->view->redirect('index');
         }
